@@ -179,7 +179,7 @@ new AutoCompleteView({
 			<a name="options" class="anchor" href="#options"><span class="octicon octicon-link"></span></a>Model URL support
 		</h3>
 
-		<p>In most realistic applications, the data you are searching against is on the server, not cached in the client browser. If you define a url in your backbone model, the widget will call <code>yourModel.fetch({'query': 'current-text-you-have-typed-in'})</code> when appropriate. This query object can be handled directly by backend databases like MongoDB or Redis.</p>
+		<p>In more realistic applications, the data you are searching against is on the server, not cached in the client browser. If you define a url in your backbone model, the widget will call <code>yourModel.fetch({'query': 'current-text-you-have-typed-in'})</code> when appropriate. This query object can be handled directly by backend databases like MongoDB or Redis.</p>
 		
 		<!--Additional Documentation-->
 		<h3>
@@ -193,11 +193,12 @@ new AutoCompleteView({
   className: 'autocomplete',//classname of the generated popup menu
   wait: 200,//throttling time (ms)
   minKeywordLength:2,//minimum keyword length
-  queryParameter:'query',//search parameter for backend
+  queryParameter:'query',//search parameter for backend - have this if you are searching in the server
   onSelect: function(person){
   	$('#selectedPerson').show().html(person.label())
   },//callback function for selected item
-  excludedPrefices: ['The']//array of prefixes to exclude (search won't trigger if you type in 'The' first)
+  excludedPrefices: ['The', 'A']//array of prefixes to exclude (search won't trigger if you type in 'The' first)
+  //default excludes ['The', 'A']
 }).render();
 		</pre>
 
