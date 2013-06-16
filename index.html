@@ -1,1 +1,224 @@
-My GitHub Page
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="viewport" content="width=640" />
+
+    <link rel="stylesheet" href="stylesheets/core.css" media="screen"/>
+    <link rel="stylesheet" href="stylesheets/mobile.css" media="handheld, only screen and (max-device-width:640px)"/>
+    <link rel="stylesheet" href="stylesheets/pygment_trac.css"/>
+	<link rel="stylesheet" href="stylesheets/backbone.autocomplete.css">
+
+    <script type="text/javascript" src="javascripts/modernizr.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js"></script>
+    <script type="text/javascript" src="javascripts/headsmart.min.js"></script>
+    <script type="text/javascript">
+      $(document).ready(function () {
+        $('#main_content').headsmart()
+      })
+    </script>
+    <title>Backbone.AutoCompleteView</title>
+  </head>
+
+  <body>
+    <a id="forkme_banner" href="https://github.com/ericjang/backbone-autocomplete">View on GitHub</a>
+    <div class="shell">
+
+      <header>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <h1>backbone-autocomplete</h1>
+            <h2>Auto-complete widget built with Backbone.js</h2>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+      </header>
+
+      <div id="no-downloads">
+        <span class="inner">
+        </span>
+      </div>
+
+
+      <span class="banner-fix"></span>
+
+
+      <section id="main_content">
+  		<h3>
+  			<a name="about" class="anchor" href="#about"><span class="octicon octicon-link"></span></a>About
+  		</h3>
+		backbone-autocomplete extends the backbone.js MVC library to allow users to create a simple auto-completing search form. This particular fork adds prefix exclusion (i.e. 'the', 'a'), which is pretty useful to have sometimes when searching things like titles of works. Documentation and code annotation is also a little better.
+		
+		<!--DEMO STUFF-->
+		
+		<h3>
+			<a name="demo" class="anchor" href="#demo"><span class="octicon octicon-link"></span></a>Demo
+		</h3>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"></script>
+		<script src="javascripts/backbone-auto.js"></script>
+		
+		<script type="text/javascript">
+		    $(function () {
+				var PersonModel = Backbone.Model.extend({
+					label: function () {
+				    	return this.get("name")
+					}
+				});
+		        
+				var PeopleCollection = Backbone.Collection.extend({
+					model: PersonModel
+				});
+
+				var People = new PeopleCollection()
+
+				People.add([ 
+					{name: "John Smith"},
+					{name: "John Rolfe"},
+					{name: "Govenor Ratcliffe"},
+					{name: "Pocahontas"}, 
+					{name: "Kocoum"}
+		    	]);
+			
+				new AutoCompleteView({
+				    input: $("#search"),
+				    model: People,
+					className: 'autocomplete',
+					wait: 200,
+					minKeywordLength:2,
+					queryParameter:'query',
+					onSelect: function(person){
+						$('#selectedPerson').show().html(person.label())
+					},
+					excludedKeywords: ['The', 'A']
+				}).render()
+				
+		})
+				
+				
+		</script>
+		
+		
+		<div id="democontainer" style="text-align: center;">
+	        <form action="#">
+	            <input type="text" placeholder="Type 'John'" id="search" style="width:300px;height:30px"/>
+	        </form>
+			<p><span>Selected: </span><span id="selectedPerson" style="display:none"></span><p></p>
+		</div>
+		
+		<!--Download-->
+		<h3>
+			<a name="options" class="anchor" href="#options"><span class="octicon octicon-link"></span></a>Download
+		</h3>
+		
+		<ul>
+			<li><a href="javascripts/backbone.autocomplete.min.js">backbone.autocomplete.min.js</a></li>
+			<li><a href="http://github.com/ericjang/backbone-autocomplete">Annotated source on Github</a></li>
+		</ul>
+		
+ 		
+		
+		<!--USAGE STUFF-->
+	    
+		<h3>
+			<a name="usage" class="anchor" href="#usage"><span class="octicon octicon-link"></span></a>Usage
+		</h3>
+		
+		<p>All you need is an input element (+ Backbone libraries).</p>
+			
+		<pre>
+&lt;script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/jquery/2.0.2/jquery.min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.4/underscore-min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.0.0/backbone-min.js"&gt;&lt;/script&gt;
+&lt;script type="text/javascript" src="backbone.autocomplete.js"&gt;&lt;/script&gt;
+&lt;form action="#"&gt;
+    &lt;input type="text" id="search" /&gt;
+&lt;/form&gt;
+		</pre>
+		
+	    <p>Create a method called `label` on your model. This should return the string that the autocompleter searches against.</p>
+		
+		<pre>
+var PersonModel = Backbone.Model.extend({
+label: function () {
+    return this.get("name");
+});
+		</pre>
+
+		<p>Create a collection for auto-completion model.</p>
+		
+		<pre>
+var PeopleCollection = Backbone.Collection.extend({
+	model: PersonModel
+});
+
+var People = new PeopleCollection()
+
+People.add([ 
+	{name: "John Smith"},
+	{name: "John Rolfe"},
+	{name: "Govenor Ratcliffe"},
+	{name: "Pocahontas"}, 
+	{name: "Kocoum"}
+]);
+		</pre>
+		
+		<p>Initialize the AutoCompleteView in your view.</p>
+		
+        <pre>
+new AutoCompleteView({
+    input: $("#search"),
+    model: People
+}).render();
+		</pre>
+
+
+		<!--URL support-->
+		<h3>
+			<a name="options" class="anchor" href="#options"><span class="octicon octicon-link"></span></a>Model URL support
+		</h3>
+
+		<p>In most realistic applications, the data you are searching against is on the server, not cached in the client browser. If you define a url in your backbone model, the widget will call <code>yourModel.fetch({'query': 'current-text-you-have-typed-in'})</code> when appropriate. This query object can be handled directly by backend databases like MongoDB or Redis.</p>
+		
+		<!--Additional Documentation-->
+		<h3>
+			<a name="options" class="anchor" href="#options"><span class="octicon octicon-link"></span></a>Additional Options
+		</h3>
+		
+        <pre>
+new AutoCompleteView({
+  input: $("#search"),
+  model: People,
+  className: 'autocomplete',//classname of the generated popup menu
+  wait: 200,//throttling time (ms)
+  minKeywordLength:2,//minimum keyword length
+  queryParameter:'query',//search parameter for backend
+  onSelect: function(person){
+  	$('#selectedPerson').show().html(person.label())
+  },//callback function for selected item
+  excludePrefix: ['The']//array of prefixes to exclude (search won't trigger if you type in 'The' first)
+}).render();
+		</pre>
+
+
+      </section>
+
+      <footer>
+        <span class="ribbon-outer">
+          <span class="ribbon-inner">
+            <p>Projects by <a href="https://github.com/ericjang">ericjang</a> can be found on <a href="https://github.com/ericjang">GitHub</a></p>
+          </span>
+          <span class="left-tail"></span>
+          <span class="right-tail"></span>
+        </span>
+        <p>Generated with <a href="http://pages.github.com">GitHub Pages</a> using Merlot</p>
+        <span class="octocat"></span>
+      </footer>
+
+    </div>
+
+    
+  </body>
+</html>
