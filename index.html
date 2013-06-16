@@ -91,7 +91,7 @@
 					onSelect: function(person){
 						$('#selectedPerson').show().html(person.label())
 					},
-					excludedKeywords: ['The', 'A']
+					excludedPrefices: ['The', 'A']
 				}).render()
 				
 		})
@@ -197,7 +197,7 @@ new AutoCompleteView({
   onSelect: function(person){
   	$('#selectedPerson').show().html(person.label())
   },//callback function for selected item
-  excludePrefix: ['The']//array of prefixes to exclude (search won't trigger if you type in 'The' first)
+  excludedPrefices: ['The']//array of prefixes to exclude (search won't trigger if you type in 'The' first)
 }).render();
 		</pre>
 
