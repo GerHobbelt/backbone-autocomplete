@@ -23,11 +23,15 @@ var AutoCompleteItemView = Backbone.View.extend({
 var AutoCompleteView = Backbone.View.extend({
     tagName: "ul",
     className: "autocomplete",
-    wait: 300,
+    wait: 200,
 
     queryParameter: "query",
     minKeywordLength: 2,
-    currentText: "",
+	
+	excludedPrefices: ['The', 'A'],
+	
+	currentText: "",
+	
     itemView: AutoCompleteItemView,
 
     initialize: function (options) {
@@ -35,12 +39,16 @@ var AutoCompleteView = Backbone.View.extend({
         this.filter = _.debounce(this.filter, this.wait);
     },
 
+
+	//draw the AutoCompleteView
     render: function () {
         // disable the native auto complete functionality
         this.input.attr("autocomplete", "off");
 
         this.$el.width(this.input.outerWidth());
-
+		
+		this.excludedPrefices = _.map(this.excludedPrefices, function(pre){	return pre.toLowerCase()});
+		
         this.input
             .keyup(_.bind(this.keyup, this))
             .keydown(_.bind(this.keydown, this))
@@ -49,6 +57,7 @@ var AutoCompleteView = Backbone.View.extend({
         return this;
     },
 
+	//navigation keys for search results
     keydown: function (event) {
         if (event.keyCode == 38) return this.move(-1);
         if (event.keyCode == 40) return this.move(+1);
@@ -56,6 +65,7 @@ var AutoCompleteView = Backbone.View.extend({
         if (event.keyCode == 27) return this.hide();
     },
 
+	//user enters a key
     keyup: function () {
         var keyword = this.input.val();
         if (this.isChanged(keyword)) {
@@ -67,10 +77,12 @@ var AutoCompleteView = Backbone.View.extend({
         }
     },
 
+	//search function
     filter: function (keyword) {
     	var keyword = keyword.toLowerCase();
-        if (this.model.url) {
-
+        //for fetching over server
+		if (this.model.url) {
+			
             var parameters = {};
             parameters[this.queryParameter] = keyword;
 
@@ -89,7 +101,17 @@ var AutoCompleteView = Backbone.View.extend({
     },
 
     isValid: function (keyword) {
-        return keyword.length > this.minKeywordLength
+		var prefixCheck = _.find(this.excludedPrefices, function(pre) {
+			return keyword.indexOf(pre) === 0
+		});
+		
+		if (prefixCheck) {
+			return false
+		} else {
+			//satisfies prefix check
+			return keyword.length > this.minKeywordLength
+		}
+        
     },
 
     isChanged: function (keyword) {
@@ -113,7 +135,7 @@ var AutoCompleteView = Backbone.View.extend({
     },
 
     loadResult: function (model, keyword) {
-        this.currentText = keyword;
+        this.currentText = keyword;//update currentText
         this.show().reset();
         if (model.length) {
             _.forEach(model, this.addItem, this);
